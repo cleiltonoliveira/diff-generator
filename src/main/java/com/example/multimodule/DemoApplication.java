@@ -2,7 +2,7 @@ package com.example.multimodule;
 
 import com.example.multimodule.model.Address;
 import com.example.multimodule.model.Customer;
-import com.example.multimodule.service.JsonTextDiff;
+import com.example.multimodule.service.JsonDiffProcessor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,16 +10,17 @@ import java.util.List;
 public class DemoApplication {
 
     public static void main(String[] args) {
-//        diffFromString();
-        diffFromObject();
+        diffFromString();
+//        diffFromObject();
     }
 
     private static void diffFromString() {
         String oldJson = ResourceUtils.readResource("old.json");
         String newJson = ResourceUtils.readResource("new.json");
 
-        String diff = JsonTextDiff.diffFromString(oldJson, newJson);
+        String diff = JsonDiffProcessor.diffAsJsonForPersistenceFromString(oldJson, newJson, true);
 
+        // uncomment to log changes:
         System.out.println(diff);
     }
 
@@ -61,8 +62,9 @@ public class DemoApplication {
                 )
                 .build();
 
-        String diff = JsonTextDiff.diffFromObject(oldCustomer, newCustomer);
+        String diff = JsonDiffProcessor.diffAsJsonForPersistenceFromObject(oldCustomer, newCustomer, true);
 
+        // uncomment to log changes:
         System.out.println(diff);
     }
 }

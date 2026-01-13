@@ -1,32 +1,37 @@
 package com.example.multimodule.service;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.difflib.DiffUtils;
-import com.github.difflib.patch.Patch;
 import com.github.difflib.UnifiedDiffUtils;
-import java.util.*;
+import com.github.difflib.patch.Patch;
 
-public final class JsonTextDiff {
+import java.util.Arrays;
+import java.util.List;
+
+public final class JsonDiffPresentation {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).registerModule(new JavaTimeModule());
 
-    private JsonTextDiff() {}
+    private JsonDiffPresentation() {
+    }
 
-    public static String diffFromObject(Object oldJson, Object newJson) {
+    public static void diffFromObject(Object oldJson, Object newJson) {
 
-        try{
+        try {
             String oldJsonValue = MAPPER.writeValueAsString(oldJson);
             String newJsonValue = MAPPER.writeValueAsString(newJson);
-            return diffFromString(oldJsonValue, newJsonValue);
+            diffFromString(oldJsonValue, newJsonValue);
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao gerar diff JSON", e);
         }
     }
 
-    public static String diffFromString(String oldJson, String newJson) {
+    public static void diffFromString(String oldJson, String newJson) {
         try {
             String oldNormalized = normalize(oldJson);
             String newNormalized = normalize(newJson);
@@ -37,10 +42,10 @@ public final class JsonTextDiff {
             Patch<String> patch = DiffUtils.diff(oldLines, newLines);
 
             if (patch.getDeltas().isEmpty()) {
-                return "Nenhuma diferença detectada";
+                System.out.println("Nenhuma diferença detectada");
             }
 
-            return renderColored(oldLines, patch);
+            System.out.println(renderColored(oldLines, patch));
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao gerar diff JSON", e);
@@ -81,6 +86,5 @@ public final class JsonTextDiff {
 
         return sb.toString();
     }
-
 }
 
