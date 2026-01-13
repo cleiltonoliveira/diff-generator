@@ -1,4 +1,4 @@
-package com.example.multimodule.application.model;
+package com.example.multimodule.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

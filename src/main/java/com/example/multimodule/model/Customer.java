@@ -1,11 +1,10 @@
-package com.example.multimodule.application.model;
+package com.example.multimodule.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor

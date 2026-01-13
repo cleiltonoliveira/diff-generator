@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.Patch;
-import org.springframework.stereotype.Service;
 import com.github.difflib.UnifiedDiffUtils;
 import java.util.*;
 
-
-@Service
 public final class JsonTextDiff {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()

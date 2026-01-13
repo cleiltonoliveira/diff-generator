@@ -1,19 +1,13 @@
-package com.example.multimodule.application;
-
-import com.example.multimodule.application.model.Address;
-import com.example.multimodule.application.model.Customer;
+import com.example.multimodule.model.Address;
+import com.example.multimodule.model.Customer;
 import com.example.multimodule.service.JsonTextDiff;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@SpringBootApplication(scanBasePackages = "com.example.multimodule")
 public class DemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
 //        diffFromString();
         diffFromObject();
     }
