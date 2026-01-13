@@ -1,3 +1,5 @@
+package com.example.multimodule;
+
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 

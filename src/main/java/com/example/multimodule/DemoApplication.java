@@ -1,3 +1,5 @@
+package com.example.multimodule;
+
 import com.example.multimodule.model.Address;
 import com.example.multimodule.model.Customer;
 import com.example.multimodule.service.JsonTextDiff;
