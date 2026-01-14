@@ -18,7 +18,7 @@ public class DemoApplication {
         String oldJson = ResourceUtils.readResource("old.json");
         String newJson = ResourceUtils.readResource("new.json");
 
-        String diff = JsonDiffProcessor.diffAsJsonForPersistenceFromString(oldJson, newJson, true);
+        String diff = JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, true);
 
         // uncomment to log changes:
         System.out.println(diff);
@@ -62,7 +62,7 @@ public class DemoApplication {
                 )
                 .build();
 
-        String diff = JsonDiffProcessor.diffAsJsonForPersistenceFromObject(oldCustomer, newCustomer, true);
+        String diff = JsonDiffProcessor.diffAsJsonFromObject(oldCustomer, newCustomer, true);
 
         // uncomment to log changes:
         System.out.println(diff);

@@ -17,7 +17,7 @@ public final class JsonDiffProcessor {
     private JsonDiffProcessor() {
     }
 
-    public static String diffAsJsonForPersistenceFromObject(
+    public static String diffAsJsonFromObject(
             Object oldObj,
             Object newObj,
             boolean logDiff
@@ -37,7 +37,7 @@ public final class JsonDiffProcessor {
         }
     }
 
-    public static String diffAsJsonForPersistenceFromString(
+    public static String diffAsJsonFromString(
             String oldJson,
             String newJson,
             boolean logDiff
