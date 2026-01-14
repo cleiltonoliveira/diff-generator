@@ -17,18 +17,18 @@
   },
   "items": [
     {
-      "sku": "SKU-001",
-      "description": "Wireless Mouse",
-      "quantity": 1,
-      "price": 25.90,
-      "discount": 0
-    },
-    {
       "sku": "SKU-002",
       "description": "Mechanical Keyboard",
       "quantity": 1,
       "price": 120.00,
       "discount": 10.00
+    },
+    {
+      "sku": "SKU-001",
+      "description": "Wireless Mouse",
+      "quantity": 1,
+      "price": 25.90,
+      "discount": 0
     }
   ],
   "payment": {

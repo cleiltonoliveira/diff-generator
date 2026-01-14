@@ -17,7 +17,7 @@ public final class JsonDiffProcessor {
     private JsonDiffProcessor() {
     }
 
-    public static String diffAsJsonFromObject(
+    public static List<JsonChange>  diffAsJsonFromObject(
             Object oldObj,
             Object newObj,
             boolean logDiff
@@ -37,7 +37,7 @@ public final class JsonDiffProcessor {
         }
     }
 
-    public static String diffAsJsonFromString(
+    public static List<JsonChange> diffAsJsonFromString(
             String oldJson,
             String newJson,
             boolean logDiff
@@ -58,18 +58,18 @@ public final class JsonDiffProcessor {
         }
     }
 
-    private static String buildStructuredDiff(
+    private static List<JsonChange> buildStructuredDiff(
             JsonNode oldNode,
             JsonNode newNode
-    ) throws Exception {
+    ) {
 
-        List<JsonChange> changes = diffAsJson(oldNode, newNode, "");
+        return diffAsJson(oldNode, newNode, "");
 
-        ObjectNode result = MAPPER.createObjectNode();
-        result.set("changes", MAPPER.valueToTree(changes));
+//        ObjectNode result = MAPPER.createObjectNode();
+//        result.set("changes", MAPPER.valueToTree(changes));
 
-        return MAPPER.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(result);
+//        return MAPPER.writerWithDefaultPrettyPrinter()
+//                .writeValueAsString(result);
     }
 
     private static List<JsonChange> diffAsJson(
