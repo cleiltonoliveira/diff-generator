@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonDiffProcessorTest {
 
@@ -172,6 +171,22 @@ public class JsonDiffProcessorTest {
         assertEquals(ChangeType.CHANGE, change.type());
         assertEquals("B", change.oldValue().asText());
         assertEquals("C", change.newValue().asText());
+    }
+
+    @Test
+    void shouldIgnoreOrderForSimpleArrays() {
+        String oldJson = """
+          { "roles": ["ADMIN", "USER"] }
+        """;
+
+        String newJson = """
+          { "roles": ["USER", "ADMIN"] }
+        """;
+
+        List<JsonChange> changes =
+                JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertTrue(changes.isEmpty());
     }
 
     @Test

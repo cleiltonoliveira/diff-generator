@@ -122,8 +122,18 @@ public final class JsonDiffProcessor {
             }
         }
 
-        // ARRAY (por índice)
-        if (oldNode.isArray()) {
+        // ARRAY
+        if (oldNode.isArray() && newNode.isArray()) {
+
+            // ARRAY SIMPLES (ignora ordem)
+            if (isSimpleValueArray(oldNode) && isSimpleValueArray(newNode)) {
+                changes.addAll(
+                        diffSimpleArrayNoOrder(oldNode, newNode, path)
+                );
+                return changes;
+            }
+
+            // ARRAY COMPLEXO (ordem importa)
             int max = Math.max(oldNode.size(), newNode.size());
             for (int i = 0; i < max; i++) {
                 changes.addAll(
@@ -137,6 +147,56 @@ public final class JsonDiffProcessor {
         }
 
         return changes;
+    }
+
+    private static List<JsonChange> diffSimpleArrayNoOrder(
+            JsonNode oldArray,
+            JsonNode newArray,
+            String path
+    ) {
+        List<JsonChange> changes = new ArrayList<>();
+
+        List<JsonNode> oldValues = new ArrayList<>();
+        oldArray.forEach(oldValues::add);
+
+        List<JsonNode> newValues = new ArrayList<>();
+        newArray.forEach(newValues::add);
+
+        // REMOVES
+        for (JsonNode oldVal : oldValues) {
+            if (!newValues.remove(oldVal)) {
+                changes.add(new JsonChange(
+                        path,
+                        ChangeType.REMOVE,
+                        oldVal,
+                        null
+                ));
+            }
+        }
+
+        // ADDS
+        for (JsonNode newVal : newValues) {
+            changes.add(new JsonChange(
+                    path,
+                    ChangeType.ADD,
+                    null,
+                    newVal
+            ));
+        }
+
+        return changes;
+    }
+
+
+    private static boolean isSimpleValueArray(JsonNode node) {
+        if (!node.isArray()) return false;
+
+        for (JsonNode element : node) {
+            if (!element.isValueNode()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
