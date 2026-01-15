@@ -78,6 +78,22 @@ public class JsonDiffProcessorTest {
         assertNull(change.newValue());
     }
 
+    @Test
+    void shouldDetectTypeChange() {
+        String oldJson = """
+           { "age": 30 }
+         """;
+        String newJson = """
+           { "age": "30" }
+        """;
+
+        List<JsonChange> changes =
+                JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertEquals(1, changes.size());
+        assertEquals(ChangeType.CHANGE, changes.get(0).type());
+    }
+
     /* ==========================================================
        ============ OBJETO ANINHADO ===============================
        ========================================================== */
@@ -174,7 +190,7 @@ public class JsonDiffProcessorTest {
     }
 
     @Test
-    void shouldIgnoreOrderForSimpleArrays() {
+    void shouldIgnoreOrderForSimpleStringArray() {
         String oldJson = """
           { "roles": ["ADMIN", "USER"] }
         """;
@@ -183,19 +199,106 @@ public class JsonDiffProcessorTest {
           { "roles": ["USER", "ADMIN"] }
         """;
 
-        List<JsonChange> changes =
-                JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+        List<JsonChange> changes = JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
 
         assertTrue(changes.isEmpty());
     }
 
     @Test
-    void shouldWorkWithJavaObjects() {
-        Person oldPerson = new Person("John", 20);
-        Person newPerson = new Person("John Doe", 20);
+    void shouldIgnoreOrderForSimpleNumberArray() {
+        String oldJson = """
+          { "roles": [1, 2] }
+        """;
+
+        String newJson = """
+          { "roles": [2, 1] }
+        """;
+
+        List<JsonChange> changes = JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertTrue(changes.isEmpty());
+    }
+
+    @Test
+    void shouldIgnoreOrderForArrayInNestedObjects() {
+        String oldJson = """
+           {
+               "product": {
+                    "tags": [
+                        {
+                            "tags": [
+                                "category: Amazon Prime",
+                                "so:prm",
+                                "avulso"
+                            ]
+                        }
+                    ]
+               }
+           }
+        """;
+
+        String newJson = """
+           {
+               "product": {
+                    "tags": [
+                        {
+                            "tags": [
+                                "so:prm",
+                                "category: Amazon Prime",
+                                "avulso"
+                            ]
+                        }
+                    ]
+               }
+           }
+        """;
+
+        List<JsonChange> changes = JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertTrue(changes.isEmpty());
+    }
+
+    @Test
+    void shouldDetectRemovalInSimpleArray() {
+        String oldJson = """
+            { "roles": ["ADMIN", "USER"] }
+        """;
+
+        String newJson = """
+            { "roles": ["ADMIN"] }
+         """;
 
         List<JsonChange> changes =
-                JsonDiffProcessor.diffAsJsonFromObject(oldPerson, newPerson, false);
+                JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertEquals(1, changes.size());
+        assertEquals("roles", changes.get(0).path());
+        assertEquals(ChangeType.REMOVE, changes.get(0).type());
+    }
+
+    @Test
+    void shouldDetectAdditionInArray() {
+        String oldJson = """
+            { "roles": ["ADMIN"] }
+        """;
+
+        String newJson = """
+            { "roles": ["ADMIN", "USER"] }
+         """;
+
+        List<JsonChange> changes = JsonDiffProcessor.diffAsJsonFromString(oldJson, newJson, false);
+
+        assertEquals(1, changes.size());
+        assertEquals("roles", changes.get(0).path());
+        assertEquals(ChangeType.ADD, changes.get(0).type());
+    }
+
+    @Test
+    void shouldIdentifyChangeWithJavaObjects() {
+        Person oldPerson = new Person("John", 20,  List.of("Blue", "Yellow"));
+        Person newPerson = new Person("John Doe", 20, List.of("Blue", "Yellow"));
+
+        List<JsonChange> changes = JsonDiffProcessor.diffAsJsonFromObject(oldPerson, newPerson, false);
 
         assertEquals(1, changes.size());
 
